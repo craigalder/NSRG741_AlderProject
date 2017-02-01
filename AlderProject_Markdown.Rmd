@@ -1,8 +1,9 @@
 ---
-title: "NSRG741_AlderProjectMarkdown"
+title: "Dialogue and Mental Health on the Internet: Relationships to Religious Affiliation"
 author: "Craig Alder"
 date: "February 1, 2017"
 output: html_document
+email: calder@emory.edu
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-##Below is the syntax for pulling from Google Sheets.
+Pulling from Google Sheets (I got it to work!).
 ```{importing G-sheet data}
 library(googlesheets)
 gs_ls()
@@ -18,120 +19,136 @@ be <- gs_title("Parenting Blogs")
 blogbasics <- gs_read(ss=be, bb = "BlogBasics", skip=1)
 bb <- as.data.frame(blogbasics)
 ```
+#Dialogue and Mental Health on the Internet: Effects of Religion
 
-Craig Alder
-Email: calder@emory.edu
-Hertzberg and Higgins, NRSG 741
-1 February 2017
-Dialogue and Mental Health on the Internet: Effects of Religion
+##Overview and Motivation
 
-Overview and Motivation
-	I grew up in a conservative Mormon family. The structure of the church provided me many supports for positive mental health, but it also affected me negatively as I struggled with depression and OCD. As an adult, I eventually left the church and worked to create meaning and structure in new contexts. Experiencing these two worlds showed me that different contexts can lead to different positive and negative mental health outcomes.
+I grew up in a conservative Mormon family. The structure of the church provided me many supports for positive mental health, but it also affected me negatively as I struggled with depression and OCD. As an adult, I eventually left the church and worked to create meaning and structure in new contexts. Experiencing these two worlds showed me that different contexts can lead to different positive and negative mental health outcomes.
+	
 As a first year graduate student, the curiosity and questions engendered by my experiences led me to study how religion affects mental health. This topic seems broadly pertinent as religion, a historically essential human institution and social determinant of health (Idler 2010), is currently undergoing more rapid changes in the United States than it has in at least decades (Hout and Fischer 2014). As society becomes less religious, how will the essential functions of religion be met by other institutions? What exactly are those functions? Do different religious affiliations fulfill these functions in qualitatively different ways? These are some of the questions driving my research broader research interests.
+
 Sociologists have long been interested in how religion relates to mental health, particularly suicide. From early sociological literature by Durkheim (1897) to more recent work (Pescosolido and Georgianna 1989), researchers have identified different affiliations as more and less protective of suicide. As the scientific understanding of mental health has expanded, mental health and religion have continued to show a unique relationship. 
+
 The Current literature shows that mental health operates on two distinct continua: 1) mental disorders or illness, and 2) positive mental health, where life is imbued with purpose and meaning. They often correlate, but not necessarily (Keyes 2007). Researchers have linked religion to both continua. In a meta-analysis of studies looking at religion and depression among all adults, Bonelli, Dew, Koenig, Rosmarin, and Vasegh (2012) found among the most rigorous studies 67% showed religious intervention could help ameliorate depression while 7% found the opposite. The reviewers further found religion positively linked to outcomes in 79% of studies on well-being, 73% of studies on hope, 81% of studies on optimism, and 93% of studies on purpose and meaning. 
 
-Research Plan
-This brings me to my present research. Utah, with the densest population of Mormons in the country, has one of the highest rates of mental illness in the country (2014-2015 National Survey on Drug Use and Health). At the same time, Utah also ranks as one of the happiest states in the country (New Research Ranks Well-Being in the U.S. by State). One way to explore this question is to look at dialogue around mental health and compare it to the illness and positive mental health literatures. Blogs about parenthood provide a rich source of dialogue data for analysis. Mormon women have a particularly strong presence in the motherhood/parenting blogosphere. Accordingly, my research proposal is as follows:
-Project Objective: Utilize topic modeling of motherhood/parenting blogs to answer the following question: How does the mental health dialogue among Mormon motherhood/parenting bloggers compare to other motherhood/parenting bloggers? This data will be interpreted using sociological theory to present a framework for analyzing mental health and dialogue.
-Data: I met with Katie Rawson, a librarian with a specialty in topic modeling, to review my project. We created a plan for collection of data (see the schedule below). I am identifying the blogs needed to scrape data and some basic data points to pair with each blog. This data is available at this link.
-Data Wrangling: Do you anticipate that there will be extensive data cleaning / reshaping / extraction? This will be a significant portion of my project. The schedule provides more detail.
-Exploratory Analysis: Which methods / visualizations are you planning to use to explore your tidy dataset? Topic modeling will be the central exploratory method, in addition to summarizing variables and running cross tabulations.
-Analysis: How are you planning to analyze your data? 
+##Research Plan
+
+This brings me to my present research. Utah, with the densest population of Mormons in the country, has one of the highest rates of mental illness in the country (2014-2015 National Survey on Drug Use and Health). At the same time, Utah also ranks as one of the happiest states in the country (New Research Ranks Well-Being in the U.S. by State). One way to explore this question is to look at dialogue around mental health and compare it to the illness and positive mental health literatures. Blogs about parenthood provide a rich source of dialogue data for analysis. Mormon women have a particularly strong presence in the motherhood/parenting blogosphere. 
+
+*Project Objective. Utilize topic modeling of motherhood/parenting blogs to answer the following question: How does the mental health dialogue among Mormon motherhood/parenting bloggers compare to other motherhood/parenting bloggers? This data will be interpreted using sociological theory to present a framework for analyzing mental health and dialogue.
+
+*Data: I met with Dr. Katie Rawson, a librarian with a specialty in topic modeling, to review my project. We created a plan for collection of data (see the schedule below). I am identifying the blogs needed to scrape data and some basic data points to pair with each blog. This data is available at this link.
+
+*Data Wrangling: Do you anticipate that there will be extensive data cleaning / reshaping / extraction? This will be a significant portion of my project. The schedule provides more detail.
+
+*Exploratory Analysis: Which methods / visualizations are you planning to use to explore your tidy dataset? Topic modeling will be the central exploratory method, in addition to summarizing variables and running cross tabulations.
+
+##Analysis: How are you planning to analyze your data? 
+
 Independent variables:
-Religious affiliation
-Atheist/Agnostic
-Unclear
-Mormon
-Subtle Christian
-Openly Christian
-Other
-Religiosity
-3 categories
-Frequently mentions faith 
-Sometimes mentions faith
-Rarely or never mentions faith
+
+*Religious affiliation*
+
+---Atheist/Agnostic
+
+---Unclear
+
+---Mormon
+
+---Subtle Christian
+
+---Openly Christian
+
+---Other
+
+*Religiosity, 3 categories*
+
+---Frequently mentions faith 
+
+---Sometimes mentions faith
+
+---Rarely or never mentions faith
+
 Controls
-Year blog started 
-Number of children 
-Marital status 
-Profession 
-Age 
-Race 
-State 
-City 
-Urbanicity
-Number of ads on average page
+
+*Year blog started*
+
+*Number of children* 
+
+*Marital status*
+
+*Profession* 
+
+*Age*
+
+*Race* 
+
+*State* 
+
+*City* 
+
+*Urbanicity*
+
+*Number of ads on average page*
+
 Outcome
-Solution made up of text topics
+
+*Solution made up of text topics*
+
 Because my dataset will essentially be treated as a population rather than a random sample, I will be primarily running T-test comparisons of means, comparing frequencies across groups. I will assess how affiliation affects frequency of topics related to mental illness, positive mental health, and whether one accompanies the other. Because topic modeling is a very inductive process, I will work with Dr. Rawson closely in the library to understand further analyses that will work well with my data.
+
 Hypothesis: Mormon bloggers will be more likely to mention both mental illness and positive mental health, and significantly more likely to use positive mental health topics when illness topics come up. 
 
-Weekly Schedule
-2/5 - Get as many blogs as possible.
+##Weekly Schedule
+
+2/5 - Get as many blogs as possible compiled into a [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0). The goal is at least 30.
+
 2/13 - Use RVest package to scrape the blog posts and figure out html problems.
+
 2/20 - Solve scraping problems and identify data wrangling goals, literature review
+
 2/27 - Data wrangle and initial topic modeling, literature review. Use Hadley’s RVest document to pair Google sheet with topics.
+
 3/6 - Go back to data wrangling, identifying new data needed from blogs and manipulating existing data as needed. Determine topics/words to drop from analysis and whether any filters are needed to identify mental health posts.
+
 3/13 - Topic modeling with draft of outputs for final paper, literature review
+
 3/20 - Go back to data wrangling, identifying new data needed from blogs and manipulating existing data as needed
+
 3/27 - Read, read, read, and revisit data as further informed by reading
+
 4/3 - Write, write, write, and revisit data as informed by writing
+
 4/10 - Full draft of writing, output
+
 4/17 - Finalize analysis and publication
+
 4/24 - Submit Powerpoint
 
-Examples of Output Tables and Figures I Will Model Mine After
+##Tables/Output
 
+Table 1: Descriptives of solution from topic modeling.
 
-Table 1: Descriptives of solution from topic modeling
-variables
+Table 2: Descriptives of other variables.
 
-Table 2: cluster-based visualization. Blog posts will be the individual dots. The colors will represent affiliation. I will have a triangle of three categories to distribute the dots: mental illness dialogue, positive mental health dialogue, neither.  The more topics related to one of the the categories per post, the closer the dot representing that post will be to that category.
+Table 3: cluster-based visualization. Blog posts will be individual dots. Colors of dots will represent affiliation. I will have a triangle of three categories to distribute the dots: mental illness dialogue, positive mental health dialogue, neither.  The more topics related to one of the the categories per post, the closer the dot representing that post will be to that category.
 
+Tables 4-6: Using line graphs, I will be able to graphically depict changes across time. Religious affiliations will each represent a line, so graphically I will be able to depict whether religious affiliation is meaningfully different in terms of topic dialogue, and whether religious affiliation differences change over time. Table 4 will depict proportional mentions of mental health (positive or negative) topics to non-mental health topics. Table 5 will graph proportions of posts with positive mental health topics not accompanied by mental illness topics to posts mentioning positive mental health and mental illness. Table 6 will do the opposite, graphing proportions of posts with mental illness topics not accompanied by positive mental health to posts mentioning both.  
 
-
-
-Table 3: I will be able to utilize changes across time and determine if religious affiliation differences maintain significance or change (so instead of conflict and comparison in the table below, I will have religious affiliation 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+The link to my Github account is [https://github.com/craigalder](https://github.com/craigalder). The link to my repository for this assignment is [https://github.com/craigalder/NSRG741_AlderProject.git](https://github.com/craigalder/NSRG741_AlderProject.git).
+The link to my spreadsheet where I am collecting the Blogs for this project is [https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0](https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0)
 
 
 REFERENCES
 
 Bonelli, R., Dew, R. E., Koenig, H. G., Rosmarin, D. H., & Vasegh, S. (2012). Religious and spiritual factors in depression: review and integration of the research. Depression research and treatment, 2012.
+
 Durkheim, E. (1951). Suicide: a study in sociology [1897]. Translated by JA Spaulding and G. Simpson (Glencoe, Illinois: The Free Press, 1951).
+
 Hout, M., & Fischer, C. S. (2014). Explaining why more Americans have no religious preference: Political backlash and generational succession, 1987–2012. Sociological Science, 1(9), 423-47.
+
 Idler, E. L. 2010. Health and religion. The Wiley Blackwell Encyclopedia of Health, Illness, Behavior, and Society.
+
 Keyes, C. L. Promoting and protecting mental health as flourishing: a complementary strategy for improving national mental health. 2007. American psychologist, 62(2), 95.
+
 Pescosolido, B. A., & Georgianna, S. (1989). Durkheim, suicide, and religion: Toward a network theory of suicide. American Sociological Review, 33-48.
