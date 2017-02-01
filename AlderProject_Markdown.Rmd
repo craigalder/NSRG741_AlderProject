@@ -1,0 +1,40 @@
+---
+title: "NSRG741_AlderProjectMarkdown"
+author: "Craig Alder"
+date: "February 1, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+##Below is the syntax I need to pull from Google Sheets. I need to figure out how to create an access code. For now, I will just download my spreadsheet to show what I am collecting. Dr. Rawson in the library will help me in a week or so to start pulling HTML from the blogs you can see in the data set.
+```{importing G-sheet data}
+library(googlesheets)
+gs_ls()
+be <- gs_title("Parenting Blogs")
+blogbasics <- gs_read(ss=be, bb = "BlogBasics", skip=1)
+bb <- as.data.frame(blogbasics)
+
+```
