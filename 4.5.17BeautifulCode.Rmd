@@ -1,0 +1,73 @@
+---
+title: "4.5.17 The Long Exodus Gets Somewhere, Milestone 2"
+author: "Craig Alder"
+date: "4/5/2017"
+output: html_document
+---
+I have worked really hard developing this code and learned that the internet R discussions extend deep into the internet -- and it finally works! The printout at the end of this document is a sample of what it pulls. I can apply this same form to the rest of the blogs. You can also see the other variables I have collected and the extensive preparation of html at [https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0] (https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0). My repository should have documentation of the extensive work it took to get this seemingly simple code. Next week I will run the topic modelling with the librarian I've been working with, so I can then plot the data.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rvest)    
+url <-  "http://www.ashleyannphotography.com/blog/2017/04/02/canopy-anna-turner/"
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    read_html(url) %>% 
+        html_nodes(".article-content")%>%           
+        html_text() %>% 
+        gsub(x = ., pattern = '[\a\t\n]', replacement = '')
+       # Sys.sleep(2)
+}
+
+getDate <- function(url) {
+    Sys.sleep(.3)
+    read_html(url) %>% 
+        html_node(".updated") %>%
+        html_text()
+   #     Sys.sleep(1:3)
+}
+
+getTitle <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".article-title") %>%
+        html_text()
+       # Sys.sleep(1:3)
+}
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link-wrap a") %>%
+        html_attr("href")
+   #     Sys.sleep(1:3)
+}
+
+scrapeBackMap <- function(url, n) {
+    Sys.sleep(1.6)
+    purrr::map_df(1:n, ~{
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+        
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+                        )
+    })
+}
+
+res <- scrapeBackMap(url, 3)
+class(res)
+str(res)
+```
+The link to my Github account is [https://github.com/craigalder](https://github.com/craigalder). The link to my repository for this project is [https://github.com/craigalder/NSRG741_AlderProject](https://github.com/craigalder/NSRG741_AlderProject).

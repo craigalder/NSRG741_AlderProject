@@ -1,0 +1,206 @@
+---
+title: "Building Data Frame - blogs"
+author: "Craig Alder"
+date: "3/27/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+```
+
+```{importing G-sheet data}
+#creating dataframe
+
+library(googlesheets)
+gs_ls("Parenting Blogs")
+be <- gs_title("Parenting Blogs")
+blogsetup <- gs_read(ss=be, blogframe = "Blog dataframe")
+blogframe <- as.data.frame(blogsetup)
+
+
+```
+
+```{r}
+#Pulling an individual post for practice
+    testpost <- read_html("http://www.ashleyannphotography.com/blog/2017/04/02/canopy-anna-turner/")
+    html_nodes("contentmiddle")
+    html_nodes(":not(#commentblock)")
+    html_text
+    as.character
+    toString
+
+    
+tester <- read_html("http://www.ashleyannphotography.com/blog/2017/04/02/canopy-anna-turner/")
+maintext <- tester %>%
+  html_nodes(".article-content") %>%
+  html_text()
+links <- tester %>%
+     html_nodes(".article-content") %>%
+     html_text()
+maintext <- gsub('[\a]', '', maintext)
+maintext <- gsub('[\t]', '', maintext)
+maintext <- gsub('[\n]', '', maintext)
+
+       nexturl <- tester %>%
+       html_nodes(".prev-post-link-wrap a") %>%
+       html_attr("href")
+    linky <- tester %>%
+       html_nodes("prev-post-link-wrap a") %>%
+       html_text()
+    Sys.sleep(sample(seq(1, 3, by=0.001), 1))
+```
+
+```{r}
+#loop to pull URL's
+#tutorial page: http://francojc.github.io/web-scraping-with-rvest/
+
+amalah_arch1 <- read_html("http://www.amalah.com/amalah/archives.html")
+monthurls <- amalah_arch1 %>%
+html_nodes(".archive-date-based a") %>%
+  html_attr("href")
+links <- amalah_arch1 %>%
+     html_node(".archive-date-based a") %>%
+     html_text()
+
+#sotu <-data.frame(links=links,amalah_arch1=amalah_arch1, stringsAsFactors = FALSE) head(sotu)
+  
+for(i in length(monthurls)){
+   posturls <- monthurls[i] %>%
+   posturls <- read_html(posturls) %>%
+   html_nodes(".entry-header a") %>%
+   html_attr("href") %>%
+   linking <- monthurls[i] %>%
+   html_text() %>%
+   
+   amalahframe<-data.frame(html_nodes(".entry-header a") %>%  html_attr("href"),  
+       stringsAsFactors=FALSE)
+all<-rbind(all,amalahframe)
+}
+```
+
+```{r}
+#http://stackoverflow.com/questions/27832757/how-can-i-use-a-loop-to-scrape-website-data-for-multiple-webpages-in-r/27853299#27853299
+
+for(i in length(monthurls2)){
+#length means go from 1 to the end
+#for each item in list, do everything in curly brackets
+#site <- paste("http://www.countryreports.org/country/",i,".htm", sep="")
+  site <- monthurls2[i]
+
+#i means country (item in country list)
+#it makes this url, saying it wants the html for the entire url (see below)
+site <- read_html(site)
+
+bodytext<-
+data.frame(names =site %>% html_nodes("#individual-post entry") %>% html_text() ,
+#Make a data frame called bodytext with variable names pulled from assigned nodes in each url
+     title =site %>% html_nodes("#post-title text-center") %>% html_text() ,
+#Add new variable called title. Remember we are still inside curly brackets {}
+       stringsAsFactors=FALSE)
+
+bodytext$nm <- i
+#Label each item within France as France, England as England, etc.
+bodytext$names   <- gsub('[\r\n\t]', '', bodytext$names)
+#Every time we see names, they are attached to \r\n\t. We don't want this, so substitute it with nothing.
+bodytext$title   <- gsub('[\r\n\t]', '', bodytext$title)
+all<-rbind(all,bodytext)
+#this just means that as we iterate through the countries, add each country to what we already have in the dataframe 
+}
+ View(all)
+ ```
+ traceback()
+
+```{r}
+#loop to pull URL's
+       
+base <- "http://www.sundrymourning.com"
+date <- "/[2][0][0-1][0-9]/[0-1][0-9]/[0-3][0-9]"
+urltitle <- "/[-/A-Xa-z0-9]*/"
+
+asurl <- base + date + urltitle
+```
+
+```{r}
+?data.frame
+
+for(i in theblog){
+#for each item in list, do everything in curly brackets
+site <- paste("http://www.countryreports.org/country/",i,".htm", sep="")
+#i means country (item in country list)
+#it makes this url, saying it wants the html for the entire url (see below)
+site <- html(site)
+
+stats<-
+data.frame(names =site %>% html_nodes(xpath="//*/td[1]") %>% html_text() ,
+#Make a data frame called stats with variable names pulled from assigned nodes in each url
+     facts =site %>% html_nodes(xpath="//*/td[2]") %>% html_text() ,
+#Add new variable called facts. Remember we are still inside curly brackets {}
+       stringsAsFactors=FALSE)
+
+stats$nm <- i
+#nm is a new variable taken from i. For example, label each item within France as France, England as England, etc.
+stats$names   <- gsub('[\r\n\t]', '', stats$names)
+#Every time we see names, they are attached to \r\n\t. We don't want this, so substitute it with nothing.
+stats$facts   <- gsub('[\r\n\t]', '', stats$facts)
+all<-rbind(all,stats)
+#maybe specif all=none
+#this just means that as we iterate through the countries, add each country to what we already have in the dataframe 
+}
+ View(all)
+```
+
+```{r}
+
+
+baskets.list <- list(baskets.team, “2010-2011”)
+?data.frame
+
+for(i in theblog){
+#for each item in list, do everything in curly brackets
+site <- paste("http://www.countryreports.org/country/",i,".htm", sep="")
+#i means country (item in country list)
+#it makes this url, saying it wants the html for the entire url (see below)
+site <- html(site)
+
+stats<-
+data.frame(names =site %>% html_nodes(xpath="//*/td[1]") %>% html_text() ,
+#Make a data frame called stats with variable names pulled from assigned nodes in each url
+     facts =site %>% html_nodes(xpath="//*/td[2]") %>% html_text() ,
+#Add new variable called facts. Remember we are still inside curly brackets {}
+       stringsAsFactors=FALSE)
+
+stats$nm <- i
+#nm is a new variable taken from i. For example, label each item within France as France, England as England, etc.
+stats$names   <- gsub('[\r\n\t]', '', stats$names)
+#Every time we see names, they are attached to \r\n\t. We don't want this, so substitute it with nothing.
+stats$facts   <- gsub('[\r\n\t]', '', stats$facts)
+all<-rbind(all,stats)
+#maybe specif all=none
+#this just means that as we iterate through the countries, add each country to what we already have in the dataframe 
+}
+ View(all)
+ ```
+
+```{r}
+#loop to pull URL's
+       
+base <- "http://www.sundrymourning.com"
+date <- "/[2][0][0-1][0-9]/[0-1][0-9]/[0-3][0-9]"
+urltitle <- "/[-/A-Xa-z0-9]*/"
+
+asurl <- base + date + urltitle
+```
+
+
+
+
+```{r}
+ 
+testpost <- AllandSundry_test %>% 
+       html_nodes("#contentmiddle") %>%
+       html_attrs() %>%
+       as.character()
+```
+  ```

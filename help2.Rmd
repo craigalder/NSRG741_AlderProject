@@ -1,0 +1,82 @@
+---
+title: "Example"
+author: "Craig Alder"
+date: "4/3/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+```
+
+Main source for syntax suggestions: http://francojc.github.io/web-scraping-with-rvest/
+
+Task: I am scraping posts from 24 blogs. Today I have been trying to figure out the syntax for a path through each individual blog to pull each post and am running into some problems. 
+
+Below, I have listed the steps I am taking for one of the blogs.
+
+1. There is a main page of archives, object amalah_arch1, with links to monthly pages of archives. I need to pull the pages into a single object. (I have done this successfully.) 
+```{r}
+    ashphot <- read_html("http://www.ashleyannphotography.com/blog/2017/04/")
+       monthurls <- ashphot %>%
+       html_nodes("#archives-2 option") %>%
+       html_attr("value")
+    links <- ashphot %>%
+       html_node("#archives-2 option") %>%
+       html_text()
+monthurls<-monthurls[2:109]
+```
+
+2. Unfortunately, the monthurls pages don't have all posts from a given month if there are lots of posts. Each page does have a link, however, to the next page of posts for the month. I'm thinking I could create a second object, call it monthurls2, with all the urls for the second page of a month archive. I'll do this 4 more times (monthurls3, monthurls4, monthurls5, monthurls6). Then, I could combine all the monthurls into a single object, allmonthurls. (I am getting an error here that there is "no applicable method for 'xml_text' applied to an object of class 'character'")
+```{r}
+    for(i in c(monthurls)){
+      txt <- getURL(url=monthurls)
+      monthurls2 <- read_html(txt)
+      html_nodes(".text a") %>%
+      html_attr("href") %>%
+      linking2 <- monthurls2%>%
+      html_text()%>%
+      if(inherits(monthurls2, "error")) next
+      
+      }
+
+      for(i in c(monthurls2)){
+      txt2 <- getURL(url=monthurls2) %>%
+      monthurls3 <- read_html(txt2) %>%
+      html_nodes(".text a") %>%
+      html_attr("href") %>%
+      linking3 <- monthurls2 %>%
+      html_text()
+      if(inherits(monthurls2, "error")) next
+      
+      }
+
+      monlist<-list(monthurls,monthurls2)
+      allmonthurls<-Reduce(c,monlist)
+```
+3. After fixing above, I need to scrape the url for each page from allmonthurls.
+```{r}
+     for(i in length(allmonthurls)){
+      allposts <- allmonthurls %>%
+      allposts <- read_html(allposts) %>%
+      html_nodes(".text a") %>%
+      html_attr("href") %>%
+      postlinks <- allmonthurls%>%
+      html_text()
+      }
+```
+4. I then need to pull text from each url in object allposts and create a dataframe.
+
+```{r}
+    for(i in length(allposts)){
+      posturls <- allposts %>%
+      posturls <- read_html(posturls) %>%
+      amalahframe<-data.frame(html_nodes(".individual-post") %>%
+      html_text(),  
+      postdate=posturls %>% html_nodes(".entry-date a") %>% html_text(),
+      stringsAsFactors=FALSE)
+    all<-rbind(all,amalahframe)
+      }
+```
+
