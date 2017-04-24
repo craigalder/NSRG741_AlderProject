@@ -1,0 +1,15 @@
+---
+title: "Combining Frames"
+author: "Craig Alder"
+date: "April 12, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+combined <- rbind(df_amalah,df_amalah2,df_amalah3,df_amalah4,df_amalah5,df_amalah6,df_amalah7,df_dooce1,df_dooce2,df_dooce3,res)
+save(combined,file="combined.Rda")
+```

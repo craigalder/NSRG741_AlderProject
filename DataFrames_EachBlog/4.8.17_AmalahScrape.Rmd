@@ -1,0 +1,500 @@
+---
+title: "4.5.17 The Long Exodus Gets Somewhere, Milestone 2"
+author: "Craig Alder"
+date: "4/5/2017"
+output: html_document
+---
+I have worked really hard developing this code and learned that the internet R discussions extend deep into the internet -- and it finally works! The printout at the end of this document is a sample of what it pulls. I can apply this same form to the rest of the blogs. You can also see the other variables I have collected and the extensive preparation of html at [https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0] (https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0). My repository should have documentation of the extensive work it took to get this seemingly simple code. Next week I will run the topic modelling with the librarian I've been working with, so I can then plot the data.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rvest)    
+url <- "http://www.amalah.com/amalah/2017/04/a-girls-night-in-300-giveaway.html"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a") %>%
+        .[[1]] %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah <- scrapeBackMap(url, 500)
+   class(df_amalah)
+   str(df_amalah)
+#creates dataframe
+   
+save(df_amalah,file="AmalahScrape_1.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_amalah$nexturl[[500]]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a") %>%
+        .[[1]] %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah2 <- scrapeBackMap(url, 500)
+   class(df_amalah2)
+   str(df_amalah2)
+#creates dataframe
+   
+save(df_amalah2,file="df_amalah2.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_amalah2$nexturl[[500]]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a") %>%
+        .[[1]] %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah3 <- scrapeBackMap(url, 500)
+   class(df_amalah3)
+   str(df_amalah3)
+#creates dataframe
+   
+save(df_amalah3,file="df_amalah3.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_amalah3$nexturl[[500]]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a") %>%
+        .[[1]] %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah4 <- scrapeBackMap(url, 500)
+   class(df_amalah4)
+   str(df_amalah4)
+#creates dataframe
+   
+save(df_amalah4,file="df_amalah4.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_amalah4$nexturl[[500]]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a") %>%
+        .[[1]] %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah5 <- scrapeBackMap(url, 250)
+   class(df_amalah5)
+   str(df_amalah5)
+#creates dataframe
+   
+save(df_amalah5,file="df_amalah5.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_amalah5$nexturl[[250]]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a:nth-child(1)") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah6 <- scrapeBackMap(url, 50)
+   class(df_amalah6)
+   str(df_amalah6)
+#creates dataframe
+   
+save(df_amalah6,file="df_amalah6.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_amalah6$nexturl[[50]]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".entry-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node(".entry-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(2.6)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'amalah . com: ', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#previous_story a:nth-child(1)") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(3)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_amalah7 <- scrapeBackMap(url, 27)
+   class(df_amalah7)
+   str(df_amalah7)
+#creates dataframe
+   
+save(df_amalah7,file="df_amalah7.Rda")
+```
