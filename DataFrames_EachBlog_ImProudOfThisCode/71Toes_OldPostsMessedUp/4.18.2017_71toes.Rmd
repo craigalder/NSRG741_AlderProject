@@ -1,0 +1,215 @@
+---
+title: "4.18.17_71Toes"
+author: "Craig Alder"
+date: "April 18, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(rvest)  
+library(purrr)
+url <- "http://www.71toes.com/2017/04/conference-messages.html"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_node(".post-body div") %>% 
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = '71 Toes:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#blog-pager-older-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_71toes1 <- scrapeBackMap(url, 500)
+   class(df_71toes1)
+   str(df_71toes1)
+#creates dataframe
+   
+save(df_71toes1,file="71toes1.Rda")
+```
+
+```{r}
+library(rvest)  
+library(purrr)
+url <- df_71toes1$nexturl[500]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_node(".post-body div") %>% 
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = '71 Toes:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#blog-pager-older-link a:nth-child(1)") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_71toes2 <- scrapeBackMap(url, 500)
+   class(df_71toes2)
+   str(df_71toes2)
+#creates dataframe
+   
+save(df_71toes2,file="71toes2.Rda")
+```
+
+```{r}
+library(rvest)  
+library(purrr)
+url <- df_71toes2$nexturl[500]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_node(".post-body div") %>% 
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = '71 Toes:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes("#blog-pager-older-link a:nth-child(1)") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_71toes3 <- scrapeBackMap(url, 500)
+   class(df_71toes3)
+   str(df_71toes3)
+#creates dataframe
+   
+save(df_71toes3,file="71toes3.Rda")
+```

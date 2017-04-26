@@ -1,0 +1,368 @@
+---
+title: "4.13.17_NieNieScrape"
+author: "Craig Alder"
+date: "April 13, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+for every <br /> add a space
+
+FIX THIS BLOG
+```{r}
+#To fix lack of space in page breaks, replace all punctation with space. Then, replace double space with single space.
+#create new dataset just to be safe.
+#gsub("[[:punct:]]", " ", df_nienie3$posttext)
+#gsub("  ", " ", df_nienie3$posttext)
+```
+
+
+```{r}
+library(rvest)  
+library(purrr)
+url <- "http://www.nieniedialogues.com/2017/04/its-good-to-be-back.html"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'NieNie Dialogues:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes(".blog-pager-older-link") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_nienie1 <- scrapeBackMap(url, 1000)
+   class(df_nienie1)
+   str(df_nienie1)
+#creates dataframe
+   
+save(df_nienie1,file="nienie_1.Rda")
+```
+
+```{r}
+url <- df_nienie1$nexturl[1000]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'NieNie Dialogues:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes(".blog-pager-older-link") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_nienie2 <- scrapeBackMap(url, 1000)
+   class(df_nienie2)
+   str(df_nienie2)
+#creates dataframe
+   
+save(df_nienie2,file="nienie_2.Rda")
+```
+
+```{r}
+url <- df_nienie2$nexturl[1000]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'NieNie Dialogues:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes(".blog-pager-older-link") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_nienie3 <- scrapeBackMap(url, 500)
+   class(df_nienie3)
+   str(df_nienie3)
+#creates dataframe
+   
+save(df_nienie3,file="nienie_3.Rda")
+```
+
+```{r}
+url <- df_nienie3$nexturl[504]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_nodes(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'NieNie Dialogues:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>%
+        html_nodes(".blog-pager-older-link") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_nienie4 <- scrapeBackMap(url, 200)
+   class(df_nienie4)
+   str(df_nienie4)
+#creates dataframe
+   
+save(df_nienie4,file="nienie_4.Rda")
+```
+
+```{r}
+url <- df_nienie4$nexturl[200]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post-body") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text() %>%
+        gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_nodes(".date-header") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'NieNie Dialogues:', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>%
+        html_node(".blog-pager-older-link:nth-child(1)") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_nienie5 <- scrapeBackMap(url, 300)
+   class(df_nienie5)
+   str(df_nienie5)
+#creates dataframe
+   
+save(df_nienie5,file="nienie_5.Rda")
+```
+```{r}
+df_nieniebind <- rbind(df_nienie1,df_nienie2,df_nienie3,df_nienie4,df_nienie5)
+gsub("[[:punct:]]", " ", df_nieniebind$posttext)
+gsub("  ", " ", df_nieniebind$posttext)
+
+df_nieniebind = df_nieniebind[-1001,]
+#Deleted duplicate
+
+save(df_nieniebind,file="nienie_combined.Rda")
+```

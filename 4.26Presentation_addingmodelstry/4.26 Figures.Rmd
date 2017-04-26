@@ -1,0 +1,50 @@
+---
+title: "Figures"
+author: "Craig Alder"
+date: "4/26/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+blog_top_terms <- ldaOut_s %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+blog_top_terms %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+
+```
+
+```{r}
+library(stringr)
+
+# divide into documents, each representing one chapter
+by_post <- df_s %>%
+  group_by(bname) %>%
+  mutate(post = cumsum(str_detect(posttext, regex("^", ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  unite(document, bname, post)
+
+# split into words
+by_post_word <- by_post %>%
+  unnest_tokens(word, text)
+
+# find document-word counts
+word_counts <- by_chapter_word %>%
+  anti_join(stop_words) %>%
+  count(document, word, sort = TRUE) %>%
+  ungroup()
+```

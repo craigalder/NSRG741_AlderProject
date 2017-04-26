@@ -1,0 +1,75 @@
+---
+title: "Looping Next Page"
+author: "Craig Alder"
+date: "April 4, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+require(xml2)
+```
+
+```{r}
+##Two lips. One gets the text. The next says to use the link for the next page.
+##build the url and read it 
+ashphot_recurse <-function(blogtext){
+    link<-"http://www.ashleyannphotography.com/blog/2017/04/02/canopy-anna-turner/"
+    purl<-read_html(link)
+
+##set variables for the loop
+   i<- 1
+   #i can stand for the url
+   j<- 1
+   #
+   yft <- list()
+
+while(i == 1){
+    i <- 0
+    
+##read the part of the website I want   
+    post<- purl %>%
+    html_nodes(".article-content") %>%
+    html_text()
+    post<- purl
+    #1 stands for, "Read the first html node, assign it to post"
+    yft[[blogtext]] <- post
+    #Assign it into the list blogtext
+    #  article title        html_nodes(".article-title") %>%
+    #  date published       html_nodes("#datePublished") %>%
+ 
+    ##search for the "Next" button
+        n    <- html_nodes(purl, "link")
+        rel  <- html_attr(n, "rel")
+        link <- n[grep("prev", rel)]
+        html_nodes("link")
+        html_attr("href")
+ 
+    if (!length(link) == 2){
+        purl<- ""
+        yft[[blogtext]] <-yft[[blogtext]] %>%
+                             ldply()
+            yft[[blogtext]]
+
+        break
+    }
+ 
+    ##set the link if "Next" button exists
+    next_link <- link %>%
+                 html_nodes ("link")
+                 html_attr("href") %>%
+                 unique()
+    purl <- paste(url, next_link, sep = "") %>%
+                 read_html()
+ 
+    ##prepare for the next round
+    i <- i + 1
+    j <- j + 1
+    Sys.sleep(1:3)
+}
+yft[[blogtext]]
+}
+
+
+```

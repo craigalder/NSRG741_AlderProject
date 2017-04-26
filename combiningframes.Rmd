@@ -10,6 +10,94 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+df_71toes1$fname<-paste("71 Toes",df_71toes1$ptitle)
+df_71toes2dropped$fname<-paste("71 Toes", df_71toes2dropped$ptitle)
+save(df_71toes1,file="df_71toes1.Rda")
+save(df_71toes2dropped,file="df_71toes2dropped.Rda")
+
+
+DooceComb <-rbind(df_dooce1,df_dooce2,df_dooce3,df_dooce4,df_dooce5,df_dooce6,df_dooce7)
+DooceComb$fname<-paste("Dooce",DooceComb$ptitle)
+save(DooceComb,file="DooceComb_4.2417.Rda")
+
+AmalahComb <- rbind(df_amalah,df_amalah2,df_amalah3,df_amalah4,df_amalah5,df_amalah6,df_amalah7)
+AmalahComb$fname<-paste("Amalah",AmalahComb$ptitle)
+save(AmalahComb,file="AmalahComb.Rda")
+
+res$fname<-paste("Sycamore",res$ptitle)
+SycComb<-res
+save(SycComb,file="SycComb.Rda")
+
+nieniecombined$fname<-paste("Nie Nie",nieniecombined$ptitle)
+NieComb<-nieniecombined
+save(NieComb,file="NieComb.Rda")
+
+depfr <-rbind(df_71toes1,df_71toes2dropped,DooceComb,AmalahComb,SycComb,NieComb)
+save(depfr,file="4.24.17DepressionFrame.Rda")
+```
+
+```{r}
+#preparing stratified sample
+toes_1_2 <-rbind(df_71toes1,df_71toes2dropped)
+set.seed(415)
+toes_s<-toes_1_2[sample(nrow(toes_1_2), 400), ]
+dooce_s<-DooceComb[sample(nrow(DooceComb), 400), ]
+amalah_s<-AmalahComb[sample(nrow(AmalahComb), 400), ]
+syc_s<-SycComb[sample(nrow(SycComb), 400), ]
+nie_s<-NieComb[sample(nrow(NieComb), 400), ]
+df_samp <-rbind(toes_s,dooce_s,amalah_s,syc_s,nie_s)
+save(df_samp,file="4.25.17SampFrame.Rda")
+```
+
+```{r}
 combined <- rbind(df_amalah,df_amalah2,df_amalah3,df_amalah4,df_amalah5,df_amalah6,df_amalah7,df_dooce1,df_dooce2,df_dooce3,res)
 save(combined,file="combined.Rda")
+
+combined421 <- rbind(nieniecombined,sycamore,combined)
+save(combined421,file="4.21.17combined.Rda")
 ```
+
+```{r}
+DooceCombined <- rbind(df_dooce1,df_dooce2,df_dooce3,df_dooce4,df_dooce5,df_dooce6,df_dooce7)
+save(DooceCombined,file="DooceCombined.Rda")
+
+DooceCombined$fname<-paste("Dooce",DooceCombined$ptitle)
+```
+
+```{r}
+res$fname<-paste("Sycamore",res$ptitle)
+sycamore<-data.frame(res)
+save(sycamore,file="sycamore.Rda")
+
+sycamore$fname<-paste("Sycamore",sycamore$ptitle)
+```
+
+```{r}
+amalahcombined <- rbind(df_amalah,df_amalah2,df_amalah3,df_amalah4,df_amalah5,df_amalah6,df_amalah7)
+save(combined,file="amalahcombined.Rda")
+
+combined$fname<-paste("Amalah",combined$ptitle)
+```
+
+```{r}
+nieniecombined <- rbind(df_nienie1,df_nienie2,df_nienie3,df_nienie4,df_nienie5)
+save(nieniecombined,file="nieniecombined.Rda")
+
+nieniecombined$fname<-paste("Nie Nie",nieniecombined$ptitle)
+
+gsub("[[:punct:]]", " ", nieniecombined$posttext)
+gsub("  ", " ", nieniecombined$posttext)
+
+library(xlsx)
+write.xlsx(nieniecombined, "/Users/craigalder/Documents/mydata.xlsx", sheetName="Sheet1")
+
+library(xlsx)
+write.xlsx(x, file, sheetName="Sheet1")
+
+write.table(nieniecombined, "c:/Users/craigalder/Documents/mydata.txt", sep="\t")
+```
+
+```{r}
+df_71toes2dropped<-df_71toes2[grep("Pin It", df_71toes2$posttext, invert = TRUE) , ]
+```
+

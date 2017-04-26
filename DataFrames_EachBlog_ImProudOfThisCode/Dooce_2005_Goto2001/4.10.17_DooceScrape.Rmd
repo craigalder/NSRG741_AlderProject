@@ -1,0 +1,565 @@
+---
+title: "4.5.17 The Long Exodus Gets Somewhere, Milestone 2"
+author: "Craig Alder"
+date: "4/5/2017"
+output: html_document
+---
+I have worked really hard developing this code and learned that the internet R discussions extend deep into the internet -- and it finally works! The printout at the end of this document is a sample of what it pulls. I can apply this same form to the rest of the blogs. You can also see the other variables I have collected and the extensive preparation of html at [https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0] (https://docs.google.com/spreadsheets/d/1zxiNYbXcBGu8K20ZpYdut8ihJFLYanl3i-tdSv0TagQ/edit#gid=0). My repository should have documentation of the extensive work it took to get this seemingly simple code. Next week I will run the topic modelling with the librarian I've been working with, so I can then plot the data.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rvest)  
+library(purrr)
+url <- "https://dooce.com/2017/04/06/dooce-fourteen-hundred-and-ninety-point-two/"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_nodes(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+        if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce1 <- scrapeBackMap(url, 2500)
+   class(df_dooce1)
+   str(df_dooce1)
+#creates dataframe
+   
+save(df_dooce1,file="DooceScrape_1.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- "df_dooce1$nexturl[[2500]]"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce2 <- scrapeBackMap(url, 100)
+   class(df_dooce2)
+   str(df_dooce2)
+#creates dataframe
+   
+save(df_dooce2,file="DooceScrape_2.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- "https://dooce.com/2011/03/01/nine-years/"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce3 <- scrapeBackMap(url, 2000)
+   class(df_dooce3)
+   str(df_dooce3)
+#creates dataframe
+   
+save(df_dooce3,file="DooceScrape_3.Rda")
+```
+```{r}
+library(rvest)    
+url <- df_dooce5$nexturl[2000]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce4 <- scrapeBackMap(url, 500)
+   class(df_dooce4)
+   str(df_dooce4)
+#creates dataframe
+   
+save(df_dooce4,file="DooceScrape_4.Rda")
+```
+
+
+```{r}
+library(rvest)    
+url <- df_dooce4$nexturl[500]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce5 <- scrapeBackMap(url, 500)
+   class(df_dooce5)
+   str(df_dooce5)
+#creates dataframe
+   
+save(df_dooce5,file="DooceScrape_5.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_dooce5$nexturl[500]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce6 <- scrapeBackMap(url, 1000)
+   class(df_dooce6)
+   str(df_dooce6)
+#creates dataframe
+   
+save(df_dooce6,file="DooceScrape_6.Rda")
+```
+
+```{r}
+library(rvest)   
+####This is causing problems because one of the pages, post is titled here we are as in olden days, was removed
+url <- "https://dooce.com/2005/01/04/hammer-time/"
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce7 <- scrapeBackMap(url, 3)
+   class(df_dooce7)
+   str(df_dooce7)
+#creates dataframe
+   
+save(df_dooce7,file="DooceScrape_7.Rda")
+```
+
+```{r}
+library(rvest)    
+url <- df_dooce7$nexturl[1000]
+#Select first page.
+
+getPostContent <- function(url){
+    Sys.sleep(.2)
+    #Introduces pauses to convince server not robot.
+    read_html(url) %>% 
+        html_nodes(".post_content") %>% 
+       #html_nodes(".individual-post>:not([div.postbottomright])") %>%
+        html_text()
+        #gsub(x = ., pattern = '[\n]', replacement = ' ')
+    }
+#Pulls node for post content.
+
+
+#Pulls node for date.
+getDate <- function(url) {
+    Sys.sleep(.8)
+    read_html(url) %>% 
+        html_node(".post-date") %>%
+        html_text()
+}
+
+getTitle <- function(url){
+    Sys.sleep(1.1)
+    read_html(url) %>% 
+        html_node("title") %>%
+        html_text() %>%
+       gsub(pattern = 'dooce®', replacement = '',x= .)
+}
+#Pulls node for title.
+
+getNextUrl <- function(url) {
+    Sys.sleep(.2)
+    read_html(url) %>% 
+        html_node(".prev-post-link a") %>%
+        html_attr("href")
+    }
+#Pulls node for url to previous post.
+
+scrapeBackMap <- function(url, n){
+    Sys.sleep(1.9)
+    purrr::map_df(1:n, ~{
+    if(!is.na(url)){
+        oUrl <- url
+        date <- getDate(url)
+        post <- getPostContent(url)
+        title <- getTitle(url)
+        url <<- getNextUrl(url)
+           
+        data.frame(curpage = oUrl, 
+                        nexturl = url,
+                        posttext = post,
+                        pubdate = date,
+                        ptitle = title
+#prepares functions for dataframe
+                        )}
+    })
+}
+   df_dooce8 <- scrapeBackMap(url, 1000)
+   class(df_dooce8)
+   str(df_dooce8)
+#creates dataframe
+   
+save(df_dooce8,file="DooceScrape_8.Rda")
+```

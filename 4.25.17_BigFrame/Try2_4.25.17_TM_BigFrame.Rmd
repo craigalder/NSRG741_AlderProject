@@ -1,0 +1,321 @@
+---
+title: "4.24.17_TM_Trying"
+author: "Craig Alder"
+date: "4/24/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+rownames(depfr) <- NULL
+
+depfr$posttext <- gsub("'", "", depfr$posttext)
+#Trying to keep don't as dont not don t. Didn't work for some reason.
+depfr$posttext <- gsub("[[\n\r\t]]", " ", depfr$posttext)
+depfr$posttext <- gsub("\n|\r|\t", " ", depfr$posttext)
+depfr$posttext <- gsub("[[:punct:]]", " ", depfr$posttext)
+
+depfr$posttext <- gsub("(?i)don t ", "dont ", depfr$posttext)
+depfr$posttext <- gsub("(?i)haven t ", "havent ", depfr$posttext)
+depfr$posttext <- gsub("(?i)hasn t ", "hasnt ", depfr$posttext)
+depfr$posttext <- gsub("(?i)hadn t ", "hadnt ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)i m ", " im ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)i ll ", " ill ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)i d ", " id ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)i ve ", " ive ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)you re ", " youre ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)you ll ", " youll ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)you d ", " youd ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)you ve ", " youve ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)he s ", " hes ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)she s ", " shes ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)he ll ", " hell ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)she ll ", " shell ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)he d ", " hed ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)she d ", " shed ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)he s ", " hes ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)she s ", " shes ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)can t ", " cant ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)won t ", " wont ", depfr$posttext)
+depfr$posttext <- gsub(" (?i)can t ", " cant ", depfr$posttext)
+depfr$posttext <- gsub("(?i)A photo posted by Heather B Armstrong", " ",depfr$posttext)
+depfr$posttext <- gsub("  ", " ", depfr$posttext)
+
+badposts<-c("Unicorn have teeth","Beauty for Ash","ie Christmas Eve 20","Beauty Rises update","ie It takes hard wo","ie Jane Bronwyn turns","ie Nicholas KNO","ie Oliver KNOW","e Flippin out for Fri.","ie My childr","ie Last da.","otherhood Es","e My Thanksgivin","ie Smooching","ie Good things to")
+badposts<-(paste(badposts, collapse = "|"))
+depfr<- depfr[! grepl(badposts, depfr$fname),]
+
+df_big<-depfr
+save(df_big,file="4.25.17BigFrame.Rda")
+```
+
+
+```{r}
+#load the textmining package
+library(tm)
+library(SnowballC)
+library(qdap)
+
+myReader <- readTabular(mapping =list(ID = "fname", content = "posttext"))
+docs <- Corpus(DataframeSource(dpfr), readerControl = list(reader = myReader))
+
+# Manually keep ID information
+for (i in 1:length(docs)) {
+  attr(docs[[i]], "ftitle") <- dpfr$ftitle[i]
+}
+
+summary(docs)
+writeLines(as.character(docs[[1]]))
+
+# Remove \n I think from Nie Nie
+
+
+```
+
+```{r}
+#Transform to lower case
+docs <- tm_map(docs, content_transformer(tolower))
+
+#replace punctuation with blank space
+#docs <- gsub("[[:punct:]]", " ", docs)
+#docs <- tm_map(docs, content_transformer(gsub),pattern=":punct:", replacement=" ")
+
+#remove punctuation
+#docs <- tm_map(docs, content_transformer(removePunctuation))
+#strip digits
+docs <- tm_map(docs, content_transformer(removeNumbers))
+
+#remove stopwords 
+docs <- tm_map(docs, removeWords, stopwords("english"))
+#at some point try without 
+
+#remove particular words
+docs <- tm_map(docs, removeWords, c("chris","jason","amy","noah","ezra","ike","noahs","chuck","jon","marlo","leta","nicholas","lottie","claire","jane","nielson","mr","dooce","amalah","aria"))
+#names and some other words that were confusing topics
+
+#remove whitespace
+docs <- tm_map(docs, stripWhitespace)
+
+#stemming --- grrr. can't make work....
+#library(SnowballC)
+#docs <- tm_map(docs, stemDocument)
+#stemming combined cat and cats, nation and nationalists
+
+#Good practice to check every now and then
+writeLines(as.character(docs[[1200]]))
+
+#turn corpus into a document term matrix
+dtm = DocumentTermMatrix(docs)
+
+#view the summary of your document term matrix
+dtm
+```
+
+
+```{r}
+#convert rownames to filenames
+#rownames(dtm) <- df_nienie1$ftitle
+
+#collapse matrix by summing over columns
+freq <- colSums(as.matrix(dtm))
+
+#length should be total number of terms
+length(freq)
+
+#create sort order (descending)
+ord <- order(freq,decreasing=TRUE)
+#List all terms in decreasing order of freq and write to disk
+freq[ord]
+write.csv(freq[ord],"word_freq2.csv")
+
+#word count
+count <- rowSums(as.matrix(dtm))
+write.csv(count,"word_count2.csv")
+
+#Term Associations
+depression2 <- findAssocs(dtm, c("depression2"), corlimit=0.2) # specifying a correlation limit of 0.2
+write.csv(depression2,"depression2.csv")
+#yousef <- findAssocs(dtm, c("yousef"), corlimit=0.2) # specifying a correlation limit of 0.2
+#write.csv(yousef,"yousef.csv")
+#elhage <- findAssocs(dtm, c("hage"), corlimit=0.2) # specifying a correlation limit of 0.2
+#write.csv(elhage,"elhage.csv")
+#binladen <- findAssocs(dtm, c("binladen"), corlimit=0.2) # specifying a correlation limit of 0.2
+#write.csv(binladen,"binladen.csv")
+#terror <- findAssocs(dtm, c("terror"), corlimit=0.2) # specifying a correlation limit of 0.2
+#write.csv(terror,"terror.csv")
+#terrorist <- findAssocs(dtm, c("terrorist"), corlimit=0.2) # specifying a correlation limit of 0.2
+#write.csv(terrorist,"terrorist.csv")
+
+#######################################
+######################################
+###########TOPICMODELING#############
+####################################
+###################################
+# latent dirichlet allocation (LDA)
+# each topic contains all words across all documents
+# each topic gives each word a different probability
+# each document is a mix of all topics
+# we want to infer the latent topic structure of the documents
+# still no good way of choosing the number of clusters
+
+#load topic models library
+library(topicmodels)
+
+#Set parameters for Gibbs sampling
+burnin <- 1000
+iter <- 1000
+thin <- 500
+seed <-list(2003,5,63,100001,765)
+nstart <- 5
+best <- TRUE
+
+#Number of topics
+k <- 20
+
+#drop rows with no content
+rowTotals <- apply(dtm , 1, sum) #Find the sum of words in each Document
+dtm   <- dtm[rowTotals> 0, ] 
+
+#Run LDA using Gibbs sampling
+ldaOut_2 <-LDA(dtm,k, method="Gibbs", control=list(nstart=nstart, seed = seed, best=best, burnin = burnin, iter = iter, thin=thin))
+
+#write out results
+#docs to topics
+ldaOut_2.topics <- as.matrix(topics(ldaOut_2))
+write.csv(ldaOut_2.topics,file=paste("LDA2Gibbs",k,iter,"DocsToTopics2.csv"))
+
+#top 20 terms in each topic
+ldaOut_2.terms <- as.matrix(terms(ldaOut_2,20))
+write.csv(ldaOut_2.terms,file=paste("LDAGibbs2",k,iter,"TopicsToTerms2.csv"))
+
+
+
+#####auxilliary operations###########
+
+#Find relative importance of top 2 topics
+#topic1ToTopic2 <- lapply(1:nrow(dtm),function(x)
+#  sort(topicProbabilities[x,])[k]/sort(topicProbabilities[x,])[k-1])
+
+#Find relative importance of second and third most important topics
+#topic2ToTopic3 <- lapply(1:nrow(dtm),function(x)
+#  sort(topicProbabilities[x,])[k-1]/sort(topicProbabilities[x,])[k-2])
+
+
+#write to file
+#write.csv(topic1ToTopic2,file=paste("LDAGibbs2",k,"Topic1ToTopic2.csv"))
+#write.csv(topic2ToTopic3,file=paste("LDAGibbs2",k,"Topic2ToTopic3.csv"))
+
+#ldaoutput2 <- as.data.frame(ldaOut2@beta)
+#write.csv(ldaoutput2,file=paste("LDAGibbs2",k,"ldaOut2.csv"))
+
+#ldaOut2.terms
+#topicProbabilities
+#ldaOut2.topics
+  
+###################################
+#per topic per word probabilities
+#Beta Spreads
+###################################
+
+#The tidytext package provides this method for extracting the per-topic-per-word probabilities, called  β (“beta”), from the model.
+library(tidytext)
+
+ldaOut2_td <- tidy(ldaOut2)
+ldaOut2_td
+
+#plot it
+library(ggplot2)
+library(dplyr)
+
+lda2_top_terms <- ldaOut2_td %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+lda2_top_terms %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+write.csv(lda2_top_terms,file=paste("lda2_top_terms.csv"))
+
+#topic 2. This can be estimated based on the log ratio of the two:  log2(β2β1)
+#(To constrain it to a set of especially relevant words, we can filter for relatively common words, such as those that have a  β
+#greater than 1/1000 in at least one topic).
+
+library(tidyr)
+
+beta_spread <- ldaOut2_td %>%
+  mutate(topic = paste0("topic", topic)) %>%
+  spread(topic, beta) %>%
+  filter(topic1 > .001 | topic2 > .001) %>%
+  mutate(log_ratio = log2(topic2 / topic1))
+
+beta_spread
+write.csv(beta_spread,"beta_spread.csv")
+
+#Document Topic Probabilities
+ap_gamma <- tidy(ldaOut2, matrix = "gamma")
+ap_gamma
+
+tidy(dtm) %>%
+  filter(document == 3) %>%
+  arrange(desc(count))
+
+###################################
+#Further Illustration: Plots
+###################################
+
+dtmss <- removeSparseTerms(dtm, 0.5) # This makes a matrix that is only 15% empty space, maximum.   
+inspect(dtmss)   
+library(cluster)   
+d <- dist(t(dtmss), method="euclidian")   
+fit <- hclust(d=d, method="ward.D")   
+fit  
+
+#Dendrogram
+
+plot.new()
+plot(fit, hang=-1)
+groups <- cutree(fit, k=10)   # "k=" defines the number of clusters you are using   
+rect.hclust(fit, k=3, border="red") # draw dendogram with red borders around the 5 clusters  
+
+#Clusterplot
+
+library(fpc)   
+d <- dist(t(dtmss), method="euclidian")   
+kfit <- kmeans(d, 10)   
+clusplot(as.matrix(d), kfit$cluster, color=T, shade=T, labels=2, lines=0)
+```
+
+depMap <- function(x,n){
+
+depfr[grepl(paste(dwords, collapse = "|"),depfr$posttext,)]
+
+df[!grepl('New York Times',df$Article),]
+
+funMap <- function(x, n){
+   purrr::map_df(1:n, ~{
+     ftitle=depfr$ftitle[n]
+     pubdate=depfr$pubdate[n]
+     posttext<-depMap(x)
+     curpage<-depfr$curpage[n]
+     nexturl<-depfr$nexturl[n]
+     ptitle<-depfr$ptitle[n]
+     
+     data.frame(curpage=curpage,
+                nexturl=nexturl,
+                posttext=posttext,
+                pubdate=pubdate,
+                ptitle=ptitle
+     )}
+   )}
+   
+   depSub <- funMap(dwords, 3)
+   class(depSub)
+   str(depSub)
+
+save(depSub,file="4.24.17depSub.Rda")
